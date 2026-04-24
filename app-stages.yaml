@@ -1,0 +1,31 @@
+teamName: kubrix
+appName: testtest
+repoUrl: https://github.com/kubrix-demo/kubrix-testtest
+appNamespace:
+  create: true
+  labels:
+    kubrix.io/kyverno: kubevirt-rolebinding
+stages:
+  - name: "test"
+    requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: warehouse-{{ .Values.appName }}
+      sources:
+        direct: true
+  - name: "qa"
+    requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: warehouse-{{ .Values.appName }}
+      sources:
+        stages:
+        - test
+  - name: "prod"
+    requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: warehouse-{{ .Values.appName }}
+      sources:
+        stages:
+        - qa
